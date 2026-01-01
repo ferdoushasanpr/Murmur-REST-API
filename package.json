@@ -1,0 +1,29 @@
+{
+  "name": "murmur-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "murmur"
+  ],
+  "homepage": "https://github.com/ferdoushasanpr/Murmur-REST-API#readme",
+  "bugs": {
+    "url": "https://github.com/ferdoushasanpr/Murmur-REST-API/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ferdoushasanpr/Murmur-REST-API.git"
+  },
+  "license": "ISC",
+  "author": "Ferdous Hasan",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^9.1.1"
+  }
+}
