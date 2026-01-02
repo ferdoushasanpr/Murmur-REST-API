@@ -43,3 +43,12 @@ exports.updateMe = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.deleteMe = async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.user.id);
+    res.status(204).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
