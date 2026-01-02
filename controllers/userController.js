@@ -27,3 +27,19 @@ exports.getUserById = async (req, res) => {
     res.status(500).json({ message: "Invalid User ID format or Server Error" });
   }
 };
+
+exports.updateMe = async (req, res) => {
+  try {
+    const { username, bio } = req.body;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.user.id,
+      { username, bio },
+      { new: true, runValidators: true }
+    );
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
