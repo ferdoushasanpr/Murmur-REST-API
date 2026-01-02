@@ -7,6 +7,7 @@ const port = 3000;
 
 // Import routes
 const userRouter = require("./routers/userRouter");
+const authRouter = require("./routers/authRouter");
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING)
@@ -20,6 +21,7 @@ mongoose
 app.use(express.json());
 
 app.use("/users", userRouter);
+app.use("/auth", authRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
