@@ -28,3 +28,16 @@ exports.getTimeline = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.createMurmur = async (req, res) => {
+  try {
+    const newMurmur = await Murmur.create({
+      content: req.body.content,
+      author: req.user.id,
+    });
+
+    res.status(201).json(newMurmur);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
