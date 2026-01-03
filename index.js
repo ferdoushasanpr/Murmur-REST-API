@@ -9,6 +9,7 @@ const port = 3000;
 const userRouter = require("./routers/userRouter");
 const authRouter = require("./routers/authRouter");
 const murmurRouter = require("./routers/murmurRouter");
+const followRouter = require("./routers/followRouter");
 
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING)
@@ -24,6 +25,7 @@ app.use(express.json());
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
 app.use("/murmurs", murmurRouter);
+app.use("/follows", followRouter);
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
