@@ -62,3 +62,23 @@ exports.deleteMurmur = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.toggleLike = async (req, res) => {
+  try {
+    const murmur = await Murmur.findById(req.params.id);
+    if (!murmur) return res.status(404).json({ message: "Murmur not found" });
+
+    const isLiked = murmur.likes.includes(req.user.id);
+
+    if (isLiked) {
+      murmur.likes.pull(req.user.id);
+    } else {
+      murmur.likes.push(req.user.id);
+    }
+
+    await murmur.save();
+    res.status(200).json({ liked: !isLiked, likeCount: murmur.likes.length });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
