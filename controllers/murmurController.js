@@ -41,3 +41,24 @@ exports.createMurmur = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+exports.deleteMurmur = async (req, res) => {
+  try {
+    const murmur = await Murmur.findById(req.params.id);
+
+    if (!murmur) {
+      return res.status(404).json({ message: "Murmur not found" });
+    }
+
+    if (murmur.author.toString() !== req.user.id) {
+      return res
+        .status(403)
+        .json({ message: "You can only delete your own murmurs" });
+    }
+
+    await murmur.deleteOne();
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
