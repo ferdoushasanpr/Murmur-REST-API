@@ -11,6 +11,8 @@ const authRouter = require("./routers/authRouter");
 const murmurRouter = require("./routers/murmurRouter");
 const followRouter = require("./routers/followRouter");
 
+app.use(express.json());
+
 mongoose
   .connect(process.env.MONGODB_CONNECTION_STRING)
   .then(() => {
@@ -20,7 +22,6 @@ mongoose
     console.error("Error connecting to MongoDB:", err);
   });
 
-app.use(express.json());
 
 app.use("/users", userRouter);
 app.use("/auth", authRouter);

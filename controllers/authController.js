@@ -1,6 +1,6 @@
-const User = require("../models/User");
+const User = require("../models/Users");
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
+const bcrypt = require("bcrypt");
 
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -10,12 +10,14 @@ const createToken = (id) => {
 
 exports.signup = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { name, email, password } = req.body;
+
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     const newUser = await User.create({
-      username,
+      name,
       email,
-      password,
+      password: hashedPassword,
     });
 
     const token = createToken(newUser._id);
