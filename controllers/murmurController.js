@@ -82,3 +82,14 @@ exports.toggleLike = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.getUserMurmurs = async (req, res) => {
+  try {
+    const murmurs = await Murmur.find({ author: req.params.id }).sort({
+      createdAt: -1,
+    });
+    res.status(200).json(murmurs);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
