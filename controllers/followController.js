@@ -54,3 +54,16 @@ exports.toggleFollow = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+exports.checkFollowStatus = async (req, res) => {
+  try {
+    const follow = await Follow.findOne({
+      followerId: req.user.id,
+      followingId: req.params.id,
+    });
+
+    res.status(200).json({ isFollowing: !!follow });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
