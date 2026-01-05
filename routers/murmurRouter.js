@@ -1,10 +1,11 @@
 const router = require("express").Router();
 const murmurController = require("../controllers/murmurController");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router.get("/", murmurController.getTimeline);
-router.get("/user/:id", murmurController.getUserMurmurs);
 router.post("/:id/like", murmurController.toggleLike);
-router.post("/me", murmurController.createMurmur);
-router.delete("/me/:id", murmurController.deleteMurmur);
+router.get("/user/:id", murmurController.getUserMurmurs);
+router.post("/me", authMiddleware, murmurController.createMurmur);
+router.delete("/me/:id", authMiddleware, murmurController.deleteMurmur);
 
 module.exports = router;
