@@ -3,29 +3,42 @@ const Follow = require("../models/Follows");
 
 exports.getTimeline = async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;
     const limit = 10;
-    const skip = (page - 1) * limit;
+    const { lastCreatedAt } = req.query;
 
-    const followingRelations = await Follow.find({ followerId: req.user.id });
+    const followingRelations = await Follow.find({
+      followerId: req.user.id,
+    }).select("followingId");
+
     const followingIds = followingRelations.map((rel) => rel.followingId);
 
     followingIds.push(req.user.id);
 
-    const murmurs = await Murmur.find({ author: { $in: followingIds } })
-      .populate("author", "username")
+    const query = {
+      author: { $in: followingIds },
+    };
+
+    if (lastCreatedAt) {
+      query.createdAt = { $lt: new Date(lastCreatedAt) };
+    }
+
+    const murmurs = await Murmur.find(query)
+      .populate("author", "name")
       .sort({ createdAt: -1 })
-      .skip(skip)
       .limit(limit);
 
     res.status(200).json({
       status: "success",
       results: murmurs.length,
-      page,
       data: murmurs,
+      nextCursor:
+        murmurs.length > 0 ? murmurs[murmurs.length - 1].createdAt : null,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({
+      status: "error",
+      message: error.message,
+    });
   }
 };
 
