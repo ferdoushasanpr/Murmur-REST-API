@@ -1,4 +1,5 @@
 const User = require("../models/Users");
+const bcrypt = require("bcrypt");
 
 exports.getMe = async (req, res) => {
   try {
@@ -46,15 +47,43 @@ exports.getUserByEmail = async (req, res) => {
 
 exports.updateMe = async (req, res) => {
   try {
-    const { username, bio } = req.body;
+    const { name, bio, password, currentPassword } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      { username, bio },
-      { new: true, runValidators: true }
-    );
+    const user = await User.findById(req.user.id).select("+password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    res.status(200).json(updatedUser);
+    if (name) user.name = name;
+    if (bio) user.bio = bio;
+    if (password) {
+      if (!currentPassword) {
+        return res
+          .status(400)
+          .json({
+            message: "Please provide your current password to set a new one",
+          });
+      }
+
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res
+          .status(401)
+          .json({ message: "Current password is incorrect" });
+      }
+
+      user.password = password;
+    }
+
+    await user.save();
+
+    user.password = undefined;
+
+    res.status(200).json({
+      status: "success",
+      message: password ? "Profile and password updated" : "Profile updated",
+      data: user,
+    });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
